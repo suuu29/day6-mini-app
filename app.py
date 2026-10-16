@@ -1,3 +1,5 @@
+import sys
+
 PRIORITY_ORDER = {"HIGH": 0, "MID": 1, "LOW": 2}
 
 # (제목, 우선순위, 완료 여부)
@@ -9,14 +11,16 @@ TODOS = [
 ]
 
 
-def pending_todos(todos):
-    pending = [todo for todo in todos if not todo[2]]
-    return sorted(pending, key=lambda todo: PRIORITY_ORDER[todo[1]])
+def sorted_todos(todos, include_done=False):
+    shown = [todo for todo in todos if include_done or not todo[2]]
+    return sorted(shown, key=lambda todo: PRIORITY_ORDER[todo[1]])
 
 
 def main():
-    for title, priority, _ in pending_todos(TODOS):
-        print(f"{title} ({priority})")
+    include_done = "--all" in sys.argv[1:]
+    for title, priority, done in sorted_todos(TODOS, include_done):
+        suffix = " (완료)" if done else ""
+        print(f"{title} ({priority}){suffix}")
 
 
 if __name__ == "__main__":
